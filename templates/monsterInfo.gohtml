@@ -1,0 +1,299 @@
+{{define "content"}}
+	<div id="MonsterBox">
+		<hgroup>
+			<div class="colleft">
+				<h2>{{.Name}}</h2>
+				<h3>{{.Size}} {{.Origin}} {{.Type}}</h3>
+			</div>
+			<div class="colright">
+				<h2>Level {{.Level}} {{.Role}}</h2>
+				<h3>XP {{.XP}}</h3>
+			</div>
+			<div class="both"></div>
+		</hgroup>
+		<div class="Stats">
+			<div class="colleft">
+				<p><b>HP</b> {{.Health}}; <b>Bloodied</b> {{.BloodiedHealth}}</p>
+				<p><b>AC</b> {{.ArmorClass}}, <b>Fortitude</b> {{.Fortitude}}, <b>Reflex</b> {{.Reflex}}, <b>Will</b> {{.Will}}</p>
+				<p><b>Speed</b> {{.Speed}}</p>
+				{{with .Immune}}
+					<p><b>Immune</b> {{commaList .}}</p>
+				{{end}}
+				{{with .Resist}}
+					<p><b>Resist</b> {{commaList .}}</p>
+				{{end}}
+				{{with .Vulnerable}}
+					<p><b>Vulnerable</b> {{commaList .}}</p>
+				{{end}}
+				{{with .SavingThrows}}
+					<p><b>Saving Throws</b> {{.}}</p>
+				{{end}}
+				{{with .ActionPoints}}
+					<p><b>Action Points</b> {{.}}</p>
+				{{end}}
+			</div>
+			<div class="colright">
+				<p><b>Initiative</b> {{modInt .InitiativeBonus}}</p>
+				<p><b>Perception</b> {{modInt .Perception}}</p>
+				{{with .Senses}}
+					{{range .}}<p>{{.}}</p>{{end}}
+				{{end}}
+			</div>
+			<div class="both"></div>
+		</div>
+		{{with .Traits}}
+			<div class="Actions">
+			<h3>Traits</h3>
+				{{range .}}
+					<h4>
+						<b>{{.Name}}</b>
+						{{with .Keywords}}
+							({{commaList .}})
+						{{end}}
+						{{with .Range}}
+							&diams;<b>{{.}}</b>
+						{{end}}
+					</h4>
+					<div>
+						<p>{{.Effect}}</p>
+					</div>
+				{{end}}
+			</div>
+		{{end}}
+		{{with .StandardActions}}
+			<div class="Actions">
+				<h3>Standard Actions</h3>
+				{{range .}}
+					<h4>
+						<b>{{.Name}}</b>
+						{{with .Keywords}}
+							({{commaList .}})
+						{{end}}
+						&diams;
+						<b>{{.Usage}}</b>
+						{{if .Recharge}}
+							{{.Recharge}}
+						{{else}}
+							{{if .UsesPer}}
+								({{.Uses}}/{{.UsesPer}})
+							{{end}}
+						{{end}}
+					</h4>
+					<div>
+						{{range .Attacks}}
+							<p>
+								<i>Attack: </i>
+								{{.Range}}
+								({{.Targets}});
+								{{modInt .AttackBonus}} vs. {{.Versus}}.
+								{{with .AttackInfo}}{{.}}{{end}}
+							</p>
+						{{end}}
+						{{range .Hits}}
+							<p>
+								<i>Hit: </i>
+								{{if .DieCount}}
+									{{.DieCount}}d{{.DieSides}} + 
+								{{end}}
+								{{with .DamageBonus}}{{.}}{{end}}
+								{{.HitInfo}}
+							</p>
+						{{end}}
+						{{with .Miss}}
+							<p><i>Miss:</i> {{.}}</p>
+						{{end}}
+						{{with .Effect}}
+							<p><i>Effect:</i> {{.}}</p>
+						{{end}}
+					</div>
+				{{end}}
+			</div>
+		{{end}}
+		{{with .MoveActions}}
+			<div class="Actions">
+				<h3>Move Actions</h3>
+				{{range .}}
+					<h4>
+						<b>{{.Name}}</b>
+						{{with .Keywords}}
+							({{commaList .}})
+						{{end}}
+						&diams;
+						<b>{{.Usage}}</b>
+						{{if .UsesPer}}
+							({{.Uses}}/{{.UsesPer}})
+						{{end}}
+					</h4>
+					<div>
+						{{with .Requirement}}
+							<p>
+								<i>Requirements:</i>
+								{{.}}
+							</p>
+						{{end}}
+						<p>
+							<i>Effect:</i>
+							{{.Effect}}
+						</p>
+					</div>
+				{{end}}
+			</div>
+		{{end}}
+		{{with .MinorActions}}
+			<div class="Actions">
+				<h3>Minor Actions</h3>
+				{{range .}}
+					<h4>
+						<b>{{.Name}}</b>
+						{{with .Keywords}}
+							({{commaList .}})
+						{{end}}
+						&diams;
+						<b>{{.Usage}}</b>
+						{{if .Recharge}}
+							{{.Recharge}}
+						{{else}}
+							{{if .UsesPer}}
+								({{.Uses}}/{{.UsesPer}})
+							{{end}}
+						{{end}}
+					</h4>
+					<div>
+						{{range .Attacks}}
+							<p>
+								<i>Attack: </i>
+								{{.Range}}
+								({{.Targets}});
+								{{modInt .AttackBonus}} vs. {{.Versus}}.
+								{{with .AttackInfo}}{{.}}{{end}}
+							</p>
+						{{end}}
+						{{range .Hits}}
+							<p>
+								<i>Hit: </i>
+								{{if .DieCount}}
+									{{.DieCount}}d{{.DieSides}} + 
+								{{end}}
+								{{with .DamageBonus}}{{.}}{{end}}
+								{{.HitInfo}}
+							</p>
+						{{end}}
+						{{with .Miss}}
+							<p><i>Miss:</i> {{.}}</p>
+						{{end}}
+						{{with .Effect}}
+							<p><i>Effect:</i> {{.}}</p>
+						{{end}}
+					</div>
+				{{end}}
+			</div>
+		{{end}}
+		{{with .TriggeredActions}}
+			<div class="Actions">
+				<h3>Triggered Actions</h3>
+				{{range .}}
+					<h4>
+						<b>{{.Name}}</b>
+						{{with .Keywords}}
+							({{commaList .}})
+						{{end}}
+						&diams;
+						<b>{{.Usage}}</b>
+						{{if .Recharge}}
+							{{.Recharge}}
+						{{else}}
+							{{if .UsesPer}}
+								({{.Uses}}/{{.UsesPer}})
+							{{end}}
+						{{end}}
+					</h4>
+					<div>
+						<p>
+							<i>
+								Trigger{{with .Reaction}} ({{.}}){{end}}:
+							</i>
+							{{.Trigger}}
+						</p>
+						{{range .Attacks}}
+							<p>
+								<i>Attack </i>
+								{{.Range}} 
+								({{.Targets}});
+								{{modInt .AttackBonus}} vs. {{.Versus}}
+							</p>
+						{{end}}
+						{{range .Hits}}
+							<p>
+								<i>Hit: </i>
+								{{if .DieCount}}
+									{{.DieCount}}d{{.DieSides}} + 
+								{{end}}
+								{{.DamageBonus}}
+								{{.HitInfo}}
+							</p>
+						{{end}}
+						{{with .Miss}}
+							<p><i>Miss:</i> {{.}}</p>
+						{{end}}
+						{{with .Effect}}
+							<p><i>Effect:</i> {{.}}</p>
+						{{end}}
+					</div>
+				{{end}}
+			</div>
+		{{end}}
+		<div class="Skills">
+			<b>Skills:</b> 
+			{{with .Acrobatics}}Acrobatics: {{modInt .}}, {{end}}
+			{{with .Arcana}}Arcana: {{modInt .}}, {{end}}
+			{{with .Athletics}}Athletics: {{modInt .}}, {{end}}
+			{{with .Bluff}}Bluff: {{modInt .}}, {{end}}
+			{{with .Diplomacy}}Diplomacy: {{modInt .}}, {{end}}
+			{{with .Dungeoneering}}Dungeoneering: {{modInt .}}, {{end}}
+			{{with .Endurence}}Endurence: {{modInt .}}, {{end}}
+			{{with .Heal}}Heal: {{modInt .}}, {{end}}
+			{{with .History}}History: {{modInt .}}, {{end}}
+			{{with .Insight}}Insight: {{modInt .}}, {{end}}
+			{{with .Intimidate}}Intimidate: {{modInt .}}, {{end}}
+			{{with .Nature}}Nature: {{modInt .}}, {{end}}
+			{{with .Perception}}Perception: {{modInt .}}, {{end}}
+			{{with .Religion}}Religion: {{modInt .}}, {{end}}
+			{{with .Stealth}}Stealth: {{modInt .}}, {{end}}
+			{{with .Streetwise}}Streetwise: {{modInt .}}, {{end}}
+			{{with .Thievery}}Thievery: {{modInt .}}, {{end}}
+		</div>
+		<div class="Abilities">
+			<table>
+				<tr>
+					<td><b>Str</b> {{.Strength}} ({{modInt .StrengthMod}})</td>
+					<td><b>Dex</b> {{.Dexterity}} ({{modInt .DexterityMod}})</td>
+					<td><b>Wis</b> {{.Wisdom}} ({{modInt .WisdomMod}})</td>
+				</tr>		
+				<tr>
+					<td><b>Con</b> {{.Constitution}} ({{modInt .ConstitutionMod}})</td>
+					<td><b>Int</b> {{.Intelligence}} ({{modInt .IntelligenceMod}})</td>
+					<td><b>Cha</b> {{.Charisma}} ({{modInt .CharismaMod}})</td>
+				</tr>
+			</table>
+		</div>
+		<div class="Other">
+			<div class="colleft">
+				<b>Languages:</b> 
+				{{with .Languages}}
+					{{commaList .}}
+				{{end}}
+			</div>
+			<div class="colright">
+				<b>Alignment:</b> 
+				{{.Alignment}}
+			</div>
+			<div class="both"></div>
+			{{with .Equipment}}
+				<p>
+					<b>Equipment:</b>
+					{{commaList .}}
+				</p>
+			{{end}}
+		</div>
+	</div>
+{{end}}
