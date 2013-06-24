@@ -2,7 +2,7 @@ package dmapp
 
 var m = []Monster{
 	Monster{
-		MonsterID:       "Monster0",
+		EncodedKey:      "Monster0",
 		Name:            "Fledgling White Dragon",
 		Level:           1,
 		Role:            "Solo Brute",
@@ -146,7 +146,7 @@ var m = []Monster{
 		Languages:       []string{"Common", "Draconic"},
 	},
 	Monster{
-		MonsterID:       "Monster1",
+		EncodedKey:      "Monster1",
 		Name:            "Goblin Cutthroat",
 		Level:           1,
 		Role:            "Skirmisher",
@@ -253,7 +253,7 @@ var m = []Monster{
 		Equipment:       []string{"leather armor", "light shield", "short sword", "2 daggers"},
 	},
 	Monster{
-		MonsterID:       "Monster2",
+		EncodedKey:      "Monster2",
 		Name:            "Guard Drake",
 		Level:           2,
 		Role:            "Brute",
@@ -315,7 +315,7 @@ var m = []Monster{
 		Languages:       []string{"--"},
 	},
 	Monster{
-		MonsterID:       "Monster3",
+		EncodedKey:      "Monster3",
 		Name:            "Dracolich Servant",
 		Level:           6,
 		Role:            "Solo Controller",

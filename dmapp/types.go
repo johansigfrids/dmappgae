@@ -1,19 +1,19 @@
 package dmapp
 
 type Monster struct {
-	MonsterID string
-	Name      string
-	Level     int
-	Role      string
-	Size      string
-	Origin    string
-	Type      string
-	XP        int
+	EncodedKey string
+	Name       string
+	Level      int
+	Role       string
+	Size       string
+	Origin     string
+	Type       string
+	XP         int
 
 	Health          int
-	CurrentHealth   int
-	TemporaryHealth int
-	BloodiedHealth  int
+	CurrentHealth   int `datastore: "-"`
+	TemporaryHealth int `datastore: "-"`
+	BloodiedHealth  int `datastore: "-"`
 
 	InitiativeBonus int
 
@@ -57,17 +57,17 @@ type Monster struct {
 	Thievery      int
 
 	Strength        int
-	StrengthMod     int
+	StrengthMod     int `datastore: "-"`
 	Constitution    int
-	ConstitutionMod int
+	ConstitutionMod int `datastore: "-"`
 	Dexterity       int
-	DexterityMod    int
+	DexterityMod    int `datastore: "-"`
 	Intelligence    int
-	IntelligenceMod int
+	IntelligenceMod int `datastore: "-"`
 	Wisdom          int
-	WisdomMod       int
+	WisdomMod       int `datastore: "-"`
 	Charisma        int
-	CharismaMod     int
+	CharismaMod     int `datastore: "-"`
 
 	Alignment string
 	Languages []string
@@ -124,8 +124,7 @@ type MinorAction struct {
 	UsesPer     string
 
 	Attacks []Attack
-
-	Hits []Hit
+	Hits    []Hit
 
 	Miss string
 
@@ -146,8 +145,7 @@ type TriggeredAction struct {
 	Reaction string
 
 	Attacks []Attack
-
-	Hits []Hit
+	Hits    []Hit
 
 	Miss string
 

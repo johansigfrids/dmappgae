@@ -1,5 +1,27 @@
 {{define "content"}}
-	{{range .}}
-		<p> <a href="/viewMonster/{{.MonsterID}}">{{.Name}}</a></p>
-	{{end}}
+	<table>
+		<th>
+			<td>Level</td>
+			<td>Name</td>
+			<td>Role</td>
+			<td>Size</td>
+			<td>Origin</td>
+			<td>Type</td>
+			<td>XP</td>
+			<td></td>
+		</th>
+		{{range .}}
+			<tr>
+				<td>{{.Level}}</td>
+				<td>{{.Name}}</td>
+				<td>{{.Role}}</td>
+				<td>{{.Size}}</td>
+				<td>{{.Origin}}</td>
+				<td>{{.Type}}</td>
+				<td>{{.XP}}</td>
+				<td><a href="/viewMonster/{{.EncodedKey}}">View</a></td>
+			</tr>
+		{{end}}
+	</table>
+	<p><a href="/newMonster/">Add Monster</a></p>
 {{end}}
