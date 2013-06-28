@@ -1,168 +1,168 @@
 package dmapp
 
 type Monster struct {
-	EncodedKey string
+	EncodedKey string `datastore:",noindex"`
 	Name       string
 	Level      int
 	Role       string
 	Size       string
 	Origin     string
 	Type       string
+	Keywords   []string `datastore:",noindex"`
 	XP         int
 
-	Health          int
+	Health          int `datastore:",noindex"`
 	CurrentHealth   int `datastore: "-"`
 	TemporaryHealth int `datastore: "-"`
 	BloodiedHealth  int `datastore: "-"`
 
-	InitiativeBonus int
+	InitiativeBonus int `datastore:",noindex"`
 
-	ArmorClass int
-	Fortitude  int
-	Reflex     int
-	Will       int
+	ArmorClass int `datastore:",noindex"`
+	Fortitude  int `datastore:",noindex"`
+	Reflex     int `datastore:",noindex"`
+	Will       int `datastore:",noindex"`
 
-	Senses []string
-	Speed  string
+	Senses []string `datastore:",noindex"`
+	Speed  string   `datastore:",noindex"`
 
-	Immune     []string
-	Resist     []string
-	Vulnerable []string
+	Immune     []string `datastore:",noindex"`
+	Resist     []string `datastore:",noindex"`
+	Vulnerable []string `datastore:",noindex"`
 
-	SavingThrows int
-	ActionPoints int
+	SavingThrows int `datastore:",noindex"`
+	ActionPoints int `datastore:",noindex"`
 
-	Traits           []Trait
-	StandardActions  []StandardAction
-	MoveActions      []MoveAction
-	MinorActions     []MinorAction
-	TriggeredActions []TriggeredAction
+	Traits           []Trait           `datastore: "-"`
+	StandardActions  []StandardAction  `datastore: "-"`
+	MoveActions      []MoveAction      `datastore: "-"`
+	MinorActions     []MinorAction     `datastore: "-"`
+	TriggeredActions []TriggeredAction `datastore: "-"`
 
-	Acrobatics    int
-	Arcana        int
-	Athletics     int
-	Bluff         int
-	Diplomacy     int
-	Dungeoneering int
-	Endurence     int
-	Heal          int
-	History       int
-	Insight       int
-	Intimidate    int
-	Nature        int
-	Perception    int
-	Religion      int
-	Stealth       int
-	Streetwise    int
-	Thievery      int
+	Acrobatics    int `datastore:",noindex"`
+	Arcana        int `datastore:",noindex"`
+	Athletics     int `datastore:",noindex"`
+	Bluff         int `datastore:",noindex"`
+	Diplomacy     int `datastore:",noindex"`
+	Dungeoneering int `datastore:",noindex"`
+	Endurance     int `datastore:",noindex"`
+	Heal          int `datastore:",noindex"`
+	History       int `datastore:",noindex"`
+	Insight       int `datastore:",noindex"`
+	Intimidate    int `datastore:",noindex"`
+	Nature        int `datastore:",noindex"`
+	Perception    int `datastore:",noindex"`
+	Religion      int `datastore:",noindex"`
+	Stealth       int `datastore:",noindex"`
+	Streetwise    int `datastore:",noindex"`
+	Thievery      int `datastore:",noindex"`
 
-	Strength        int
+	Strength        int `datastore:",noindex"`
 	StrengthMod     int `datastore: "-"`
-	Constitution    int
+	Constitution    int `datastore:",noindex"`
 	ConstitutionMod int `datastore: "-"`
-	Dexterity       int
+	Dexterity       int `datastore:",noindex"`
 	DexterityMod    int `datastore: "-"`
-	Intelligence    int
+	Intelligence    int `datastore:",noindex"`
 	IntelligenceMod int `datastore: "-"`
-	Wisdom          int
+	Wisdom          int `datastore:",noindex"`
 	WisdomMod       int `datastore: "-"`
-	Charisma        int
+	Charisma        int `datastore:",noindex"`
 	CharismaMod     int `datastore: "-"`
 
-	Alignment string
-	Languages []string
-	Equipment []string
+	Alignment string   `datastore:",noindex"`
+	Languages []string `datastore:",noindex"`
+	Equipment []string `datastore:",noindex"`
 }
 
 type Trait struct {
-	Name     string
-	Keywords []string
-	Range    string
-	Effect   string
+	Name     string   `datastore:",noindex"`
+	Keywords []string `datastore:",noindex"`
+	Range    string   `datastore:",noindex"`
+	Effect   string   `datastore:",noindex"`
 }
 
 type StandardAction struct {
-	Name     string
-	Keywords []string
-	Usage    string
-	Recharge []int
+	Name     string   `datastore:",noindex"`
+	Keywords []string `datastore:",noindex"`
+	Usage    string   `datastore:",noindex"`
+	Recharge []int    `datastore:",noindex"`
 
-	Uses        int
-	CurrentUses int
-	UsesPer     string
+	Uses        int    `datastore:",noindex"`
+	CurrentUses int    `datastore:"-"`
+	UsesPer     string `datastore:",noindex"`
 
-	Attacks []Attack
+	Attacks []Attack `datastore:",noindex"`
+	Hits    []Hit    `datastore:",noindex"`
 
-	Hits []Hit
+	Miss string `datastore:",noindex"`
 
-	Miss string
-
-	Effect string
+	Effect string `datastore:",noindex"`
 }
 
 type MoveAction struct {
-	Name     string
-	Keywords []string
-	Usage    string
+	Name     string   `datastore:",noindex"`
+	Keywords []string `datastore:",noindex"`
+	Usage    string   `datastore:",noindex"`
 
-	Uses        int
-	CurrentUses int
-	UsesPer     string
+	Uses        int    `datastore:",noindex"`
+	CurrentUses int    `datastore:"-"`
+	UsesPer     string `datastore:",noindex"`
 
-	Requirement string
-	Effect      string
+	Requirement string `datastore:",noindex"`
+	Effect      string `datastore:",noindex"`
 }
 
 type MinorAction struct {
-	Name     string
-	Keywords []string
-	Usage    string
-	Recharge []int
+	Name     string   `datastore:",noindex"`
+	Keywords []string `datastore:",noindex"`
+	Usage    string   `datastore:",noindex"`
+	Recharge []int    `datastore:",noindex"`
 
-	Uses        int
-	CurrentUses int
-	UsesPer     string
+	Uses        int    `datastore:",noindex"`
+	CurrentUses int    `datastore:"-"`
+	UsesPer     string `datastore:",noindex"`
 
-	Attacks []Attack
-	Hits    []Hit
+	Attacks []Attack `datastore:",noindex"`
+	Hits    []Hit    `datastore:",noindex"`
 
-	Miss string
+	Miss string `datastore:",noindex"`
 
-	Effect string
+	Effect string `datastore:",noindex"`
 }
 
 type TriggeredAction struct {
-	Name     string
-	Keywords []string
-	Usage    string
-	Recharge []int
+	Name     string   `datastore:",noindex"`
+	Keywords []string `datastore:",noindex"`
+	Usage    string   `datastore:",noindex"`
+	Recharge []int    `datastore:",noindex"`
 
-	Uses        int
-	CurrentUses int
-	UsesPer     string
+	Uses        int    `datastore:",noindex"`
+	CurrentUses int    `datastore:"-"`
+	UsesPer     string `datastore:",noindex"`
 
-	Trigger  string
-	Reaction string
+	Trigger  string `datastore:",noindex"`
+	Reaction string `datastore:",noindex"`
 
-	Attacks []Attack
-	Hits    []Hit
+	Attacks []Attack `datastore:",noindex"`
+	Hits    []Hit    `datastore:",noindex"`
 
-	Miss string
+	Miss string `datastore:",noindex"`
 
-	Effect string
+	Effect string `datastore:",noindex"`
 }
 
 type Attack struct {
-	Range       string
-	Targets     string
-	AttackBonus int
-	Versus      string
-	AttackInfo  string
+	Range       string `datastore:",noindex"`
+	Targets     string `datastore:",noindex"`
+	AttackBonus int    `datastore:",noindex"`
+	Versus      string `datastore:",noindex"`
+	AttackInfo  string `datastore:",noindex"`
 }
 
 type Hit struct {
-	DieCount    int
-	DieSides    int
-	DamageBonus int
-	HitInfo     string
+	DieCount    int    `datastore:",noindex"`
+	DieSides    int    `datastore:",noindex"`
+	DamageBonus int    `datastore:",noindex"`
+	HitInfo     string `datastore:",noindex"`
 }

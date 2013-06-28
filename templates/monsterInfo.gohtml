@@ -3,7 +3,7 @@
 		<hgroup>
 			<div class="colleft">
 				<h2>{{.Name}}</h2>
-				<h3>{{.Size}} {{.Origin}} {{.Type}}</h3>
+				<h3>{{.Size}} {{.Origin}} {{.Type}} ({{commaList .Keywords}})</h3>
 			</div>
 			<div class="colright">
 				<h2>Level {{.Level}} {{.Role}}</h2>
@@ -250,7 +250,7 @@
 			{{with .Bluff}}Bluff: {{modInt .}}, {{end}}
 			{{with .Diplomacy}}Diplomacy: {{modInt .}}, {{end}}
 			{{with .Dungeoneering}}Dungeoneering: {{modInt .}}, {{end}}
-			{{with .Endurence}}Endurence: {{modInt .}}, {{end}}
+			{{with .Endurance}}Endurance: {{modInt .}}, {{end}}
 			{{with .Heal}}Heal: {{modInt .}}, {{end}}
 			{{with .History}}History: {{modInt .}}, {{end}}
 			{{with .Insight}}Insight: {{modInt .}}, {{end}}

@@ -2,7 +2,6 @@ package dmapp
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -115,7 +114,7 @@ func newMonsterHandler(w http.ResponseWriter, r *http.Request) {
 		tmpInt, err = strconv.ParseInt(r.FormValue("Dungeoneering"), 10, 64)
 		monster.Dungeoneering = int(tmpInt)
 		tmpInt, err = strconv.ParseInt(r.FormValue("Endurance"), 10, 64)
-		monster.Endurence = int(tmpInt)
+		monster.Endurance = int(tmpInt)
 		tmpInt, err = strconv.ParseInt(r.FormValue("Heal"), 10, 64)
 		monster.Heal = int(tmpInt)
 		tmpInt, err = strconv.ParseInt(r.FormValue("History"), 10, 64)
@@ -157,45 +156,4 @@ func newMonsterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		http.Redirect(w, r, "/viewMonster/"+encodedKey, http.StatusFound)
 	}
-}
-
-func getMonster(c appengine.Context, encodedKey string) (*Monster, error) {
-	var monster = new(Monster)
-	key, err := datastore.DecodeKey(encodedKey)
-	if err != nil {
-		return nil, err
-	}
-	err = datastore.Get(c, key, monster)
-	if err != nil {
-		return nil, err
-	}
-	monster.CurrentHealth = monster.Health
-	monster.BloodiedHealth = monster.Health / 2
-	monster.StrengthMod = calcAbilityMod(monster.Strength, monster.Level)
-	monster.ConstitutionMod = calcAbilityMod(monster.Constitution, monster.Level)
-	monster.DexterityMod = calcAbilityMod(monster.Dexterity, monster.Level)
-	monster.IntelligenceMod = calcAbilityMod(monster.Intelligence, monster.Level)
-	monster.WisdomMod = calcAbilityMod(monster.Wisdom, monster.Level)
-	monster.CharismaMod = calcAbilityMod(monster.Charisma, monster.Level)
-	return monster, nil
-}
-
-func getAllMonsters(c appengine.Context) ([]Monster, error) {
-	query := datastore.NewQuery("Monster").
-		Project("Name", "Level", "Role", "Size", "Origin", "Type", "XP").
-		Order("Level")
-	var monsters []Monster
-	_, err := query.GetAll(c, &monsters)
-	return monsters, err
-}
-
-func saveMonster(c appengine.Context, monster *Monster) (string, error) {
-	key := datastore.NewIncompleteKey(c, "Monster", nil)
-	monster.EncodedKey = key.Encode()
-	_, err := datastore.Put(c, key, monster)
-	return key.Encode(), err
-}
-
-func calcAbilityMod(ability int, level int) int {
-	return (ability-10)/2 + level/2
 }
