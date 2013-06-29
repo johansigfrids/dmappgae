@@ -13,6 +13,9 @@ func modInt(i int) string {
 }
 
 func CommaList(ss []string) string {
+	if len(ss) == 0 {
+		return ""
+	}
 	var result string
 	for _, s := range ss {
 		result = result + s + ", "

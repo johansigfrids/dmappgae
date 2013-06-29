@@ -11,13 +11,13 @@ func getMonster(c appengine.Context, encodedKey string) (*Monster, error) {
 	var monster = new(Monster)
 	key, err := datastore.DecodeKey(encodedKey)
 	if err != nil {
-		return monster, err
+		return nil, err
 	}
 	err = datastore.Get(c, key, monster)
 	if err != nil {
-		return monster, err
+		return nil, err
 	}
-	monster.EncodedKey = encodedKey
+	monster.encodedKey = encodedKey
 	return monster, nil
 }
 
@@ -28,7 +28,7 @@ func getAllMonsters(c appengine.Context) ([]Monster, error) {
 	var monsters []Monster
 	keys, err := query.GetAll(c, &monsters)
 	for i, _ := range monsters {
-		monsters[i].EncodedKey = keys[i].Encode()
+		monsters[i].encodedKey = keys[i].Encode()
 	}
 	return monsters, err
 }
@@ -53,7 +53,6 @@ func makeProp(key string, value interface{}, noindex bool, multiple bool) datast
 }
 
 func (m *Monster) Save(c chan<- datastore.Property) error {
-	c <- makeProp("EncodedKey", m.EncodedKey, true, false)
 	c <- makeProp("Name", m.Name, false, false)
 	c <- makeProp("Level", int64(m.Level), false, false)
 	c <- makeProp("Role", m.Role, false, false)
@@ -95,120 +94,120 @@ func (m *Monster) Save(c chan<- datastore.Property) error {
 		c <- makeProp("Traits."+numTraits+"."+traitNum+".Range", t.Range, true, false)
 		c <- makeProp("Traits."+numTraits+"."+traitNum+".Effect", t.Name, true, false)
 	}
-	numSa := strconv.Itoa(len(m.StandardActions))
+	numSAs := strconv.Itoa(len(m.StandardActions))
 	for i, sa := range m.StandardActions {
 		saNum := strconv.Itoa(i)
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".Name", sa.Name, true, false)
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".Name", sa.Name, true, false)
 		for _, keyword := range sa.Keywords {
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Keywords", keyword, true, true)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Keywords", keyword, true, true)
 		}
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".Usage", sa.Usage, true, false)
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".Usage", sa.Usage, true, false)
 		for _, recharge := range sa.Recharge {
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Recharge", int64(recharge), true, true)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Recharge", int64(recharge), true, true)
 		}
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".Uses", int64(sa.Uses), true, false)
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".UsesPer", sa.UsesPer, true, false)
-		numAtt := strconv.Itoa(len(sa.Attacks))
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".Uses", int64(sa.Uses), true, false)
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".UsesPer", sa.UsesPer, true, false)
+		numAtts := strconv.Itoa(len(sa.Attacks))
 		for j, attack := range sa.Attacks {
 			attNum := strconv.Itoa(j)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Attacks."+numAtt+"."+attNum+".Range", attack.Range, true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Attacks."+numAtt+"."+attNum+".Targets", attack.Targets, true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Attacks."+numAtt+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Attacks."+numAtt+"."+attNum+".Versus", attack.Versus, true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Attacks."+numAtt+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Attacks."+numAtts+"."+attNum+".Range", attack.Range, true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Attacks."+numAtts+"."+attNum+".Targets", attack.Targets, true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Attacks."+numAtts+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Attacks."+numAtts+"."+attNum+".Versus", attack.Versus, true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Attacks."+numAtts+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
 		}
-		numHit := strconv.Itoa(len(sa.Hits))
+		numHits := strconv.Itoa(len(sa.Hits))
 		for j, hit := range sa.Hits {
 			hitNum := strconv.Itoa(j)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Hits."+numHit+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Hits."+numHit+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Hits."+numHit+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
-			c <- makeProp("StandardActions."+numSa+"."+saNum+".Hits."+numHit+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Hits."+numHits+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Hits."+numHits+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Hits."+numHits+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
+			c <- makeProp("StandardActions."+numSAs+"."+saNum+".Hits."+numHits+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
 		}
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".Miss", sa.Miss, true, false)
-		c <- makeProp("StandardActions."+numSa+"."+saNum+".Effect", sa.Effect, true, false)
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".Miss", sa.Miss, true, false)
+		c <- makeProp("StandardActions."+numSAs+"."+saNum+".Effect", sa.Effect, true, false)
 	}
-	numMove := strconv.Itoa(len(m.MoveActions))
+	numMoves := strconv.Itoa(len(m.MoveActions))
 	for i, move := range m.MoveActions {
 		moveNum := strconv.Itoa(i)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".Name", move.Name, true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Name", move.Name, true, false)
 		for _, keyword := range move.Keywords {
-			c <- makeProp("MoveActions."+numMove+"."+moveNum+".Keywords", keyword, true, true)
+			c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Keywords", keyword, true, true)
 		}
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".Usage", move.Usage, true, false)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".Uses", int64(move.Uses), true, false)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".CurrentUses", int64(move.CurrentUses), true, false)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".UsesPer", move.UsesPer, true, false)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".Requirement", move.Requirement, true, false)
-		c <- makeProp("MoveActions."+numMove+"."+moveNum+".Effect", move.Effect, true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Usage", move.Usage, true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Uses", int64(move.Uses), true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".CurrentUses", int64(move.CurrentUses), true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".UsesPer", move.UsesPer, true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Requirement", move.Requirement, true, false)
+		c <- makeProp("MoveActions."+numMoves+"."+moveNum+".Effect", move.Effect, true, false)
 	}
-	numMino := strconv.Itoa(len(m.MinorActions))
+	numMinos := strconv.Itoa(len(m.MinorActions))
 	for i, mino := range m.MinorActions {
 		minoNum := strconv.Itoa(i)
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".Name", mino.Name, true, false)
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Name", mino.Name, true, false)
 		for _, keyword := range mino.Keywords {
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Keywords", keyword, true, true)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Keywords", keyword, true, true)
 		}
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".Usage", mino.Usage, true, false)
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Usage", mino.Usage, true, false)
 		for _, recharge := range mino.Recharge {
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Recharge", int64(recharge), true, true)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Recharge", int64(recharge), true, true)
 		}
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".Uses", int64(mino.Uses), true, false)
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".UsesPer", mino.UsesPer, true, false)
-		numAtt := strconv.Itoa(len(mino.Attacks))
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Uses", int64(mino.Uses), true, false)
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".UsesPer", mino.UsesPer, true, false)
+		numAtts := strconv.Itoa(len(mino.Attacks))
 		for j, attack := range mino.Attacks {
 			attNum := strconv.Itoa(j)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Attacks."+numAtt+"."+attNum+".Range", attack.Range, true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Attacks."+numAtt+"."+attNum+".Targets", attack.Targets, true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Attacks."+numAtt+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Attacks."+numAtt+"."+attNum+".Versus", attack.Versus, true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Attacks."+numAtt+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Attacks."+numAtts+"."+attNum+".Range", attack.Range, true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Attacks."+numAtts+"."+attNum+".Targets", attack.Targets, true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Attacks."+numAtts+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Attacks."+numAtts+"."+attNum+".Versus", attack.Versus, true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Attacks."+numAtts+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
 		}
-		numHit := strconv.Itoa(len(mino.Hits))
+		numHits := strconv.Itoa(len(mino.Hits))
 		for j, hit := range mino.Hits {
 			hitNum := strconv.Itoa(j)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Hits."+numHit+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Hits."+numHit+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Hits."+numHit+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
-			c <- makeProp("MinorActions."+numMino+"."+minoNum+".Hits."+numHit+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Hits."+numHits+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Hits."+numHits+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Hits."+numHits+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
+			c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Hits."+numHits+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
 		}
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".Miss", mino.Miss, true, false)
-		c <- makeProp("MinorActions."+numMino+"."+minoNum+".Effect", mino.Effect, true, false)
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Miss", mino.Miss, true, false)
+		c <- makeProp("MinorActions."+numMinos+"."+minoNum+".Effect", mino.Effect, true, false)
 	}
-	numTrig := strconv.Itoa(len(m.TriggeredActions))
+	numTrigs := strconv.Itoa(len(m.TriggeredActions))
 	for i, trig := range m.TriggeredActions {
 		trigNum := strconv.Itoa(i)
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Name", trig.Name, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Name", trig.Name, true, false)
 		for _, keyword := range trig.Keywords {
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Keywords", keyword, true, true)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Keywords", keyword, true, true)
 		}
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Usage", trig.Usage, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Usage", trig.Usage, true, false)
 		for _, recharge := range trig.Recharge {
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Recharge", int64(recharge), true, true)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Recharge", int64(recharge), true, true)
 		}
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Uses", int64(trig.Uses), true, false)
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".UsesPer", trig.UsesPer, true, false)
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Trigger", trig.Trigger, true, false)
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Reaction", trig.Reaction, true, false)
-		numAtt := strconv.Itoa(len(trig.Attacks))
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Uses", int64(trig.Uses), true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".UsesPer", trig.UsesPer, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Trigger", trig.Trigger, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Reaction", trig.Reaction, true, false)
+		numAtts := strconv.Itoa(len(trig.Attacks))
 		for j, attack := range trig.Attacks {
 			attNum := strconv.Itoa(j)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Attacks."+numAtt+"."+attNum+".Range", attack.Range, true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Attacks."+numAtt+"."+attNum+".Targets", attack.Targets, true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Attacks."+numAtt+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Attacks."+numAtt+"."+attNum+".Versus", attack.Versus, true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Attacks."+numAtt+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Attacks."+numAtts+"."+attNum+".Range", attack.Range, true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Attacks."+numAtts+"."+attNum+".Targets", attack.Targets, true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Attacks."+numAtts+"."+attNum+".AttackBonus", int64(attack.AttackBonus), true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Attacks."+numAtts+"."+attNum+".Versus", attack.Versus, true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Attacks."+numAtts+"."+attNum+".AttackInfo", attack.AttackInfo, true, false)
 		}
-		numHit := strconv.Itoa(len(trig.Hits))
+		numHits := strconv.Itoa(len(trig.Hits))
 		for j, hit := range trig.Hits {
 			hitNum := strconv.Itoa(j)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Hits."+numHit+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Hits."+numHit+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Hits."+numHit+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
-			c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Hits."+numHit+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Hits."+numHits+"."+hitNum+".DieCount", int64(hit.DieCount), true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Hits."+numHits+"."+hitNum+".DieSides", int64(hit.DieSides), true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Hits."+numHits+"."+hitNum+".DamageBonus", int64(hit.DamageBonus), true, false)
+			c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Hits."+numHits+"."+hitNum+".HitInfo", hit.HitInfo, true, false)
 		}
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Miss", trig.Miss, true, false)
-		c <- makeProp("TriggeredActions."+numTrig+"."+trigNum+".Effect", trig.Effect, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Miss", trig.Miss, true, false)
+		c <- makeProp("TriggeredActions."+numTrigs+"."+trigNum+".Effect", trig.Effect, true, false)
 	}
 	c <- makeProp("Acrobatics", int64(m.Acrobatics), true, false)
 	c <- makeProp("Arcana", int64(m.Arcana), true, false)
@@ -248,8 +247,6 @@ func (m *Monster) Load(c <-chan datastore.Property) error {
 	for prop := range c {
 		keys := strings.Split(prop.Name, ".")
 		switch keys[0] {
-		case "EncodedKey":
-			m.EncodedKey = prop.Value.(string)
 		case "Name":
 			m.Name = prop.Value.(string)
 		case "Level":
