@@ -11,12 +11,13 @@ func getMonster(c appengine.Context, encodedKey string) (*Monster, error) {
 	var monster = new(Monster)
 	key, err := datastore.DecodeKey(encodedKey)
 	if err != nil {
-		return nil, err
+		return monster, err
 	}
 	err = datastore.Get(c, key, monster)
 	if err != nil {
-		return nil, err
+		return monster, err
 	}
+	monster.EncodedKey = encodedKey
 	return monster, nil
 }
 
@@ -25,15 +26,17 @@ func getAllMonsters(c appengine.Context) ([]Monster, error) {
 		Project("Name", "Level", "Role", "Size", "Origin", "Type", "XP").
 		Order("Level")
 	var monsters []Monster
-	_, err := query.GetAll(c, &monsters)
+	keys, err := query.GetAll(c, &monsters)
+	for i, _ := range monsters {
+		monsters[i].EncodedKey = keys[i].Encode()
+	}
 	return monsters, err
 }
 
 func saveMonster(c appengine.Context, monster *Monster) (string, error) {
 	key := datastore.NewIncompleteKey(c, "Monster", nil)
-	monster.EncodedKey = key.Encode()
-	_, err := datastore.Put(c, key, monster)
-	return key.Encode(), err
+	key2, err := datastore.Put(c, key, monster)
+	return key2.Encode(), err
 }
 
 func calcAbilityMod(ability int, level int) int {

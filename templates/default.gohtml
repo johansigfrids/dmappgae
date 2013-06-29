@@ -9,6 +9,7 @@
 			<th>Type</th>
 			<th>XP</th>
 			<th></th>
+			<th></th>
 		</tr>
 		{{range .}}
 			<tr>
@@ -20,6 +21,7 @@
 				<td>{{.Type}}</td>
 				<td>{{.XP}}</td>
 				<td><a href="/viewMonster/{{.EncodedKey}}">View</a></td>
+				<td><a href="/deleteMonster/{{.EncodedKey}}">Delete</a></td>
 			</tr>
 		{{end}}
 	</table>
