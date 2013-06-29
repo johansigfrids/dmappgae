@@ -1,0 +1,11 @@
+{{define "content"}}
+	<div>
+		<p>Are you sure you wish to delete this monster?</p>
+		<p><b>{{.Name}}</b></p>
+		<form method="post" action="/deleteMonster/">
+			<input type="hidden" name="Key" value="{{.EncodedKey}}">
+			<input type="submit" value="Yes">
+			<input type="submit" value="No" formaction="/">
+		</form>
+	</div>
+{{end}}

@@ -17,7 +17,7 @@ func getMonster(c appengine.Context, encodedKey string) (*Monster, error) {
 	if err != nil {
 		return nil, err
 	}
-	monster.encodedKey = encodedKey
+	monster.EncodedKey = encodedKey
 	return monster, nil
 }
 
@@ -28,7 +28,7 @@ func getAllMonsters(c appengine.Context) ([]Monster, error) {
 	var monsters []Monster
 	keys, err := query.GetAll(c, &monsters)
 	for i, _ := range monsters {
-		monsters[i].encodedKey = keys[i].Encode()
+		monsters[i].EncodedKey = keys[i].Encode()
 	}
 	return monsters, err
 }
@@ -37,6 +37,15 @@ func saveMonster(c appengine.Context, monster *Monster) (string, error) {
 	key := datastore.NewIncompleteKey(c, "Monster", nil)
 	key2, err := datastore.Put(c, key, monster)
 	return key2.Encode(), err
+}
+
+func deleteMonster(c appengine.Context, encodedKey string) error {
+	key, err := datastore.DecodeKey(encodedKey)
+	if err != nil {
+		return err
+	}
+	err = datastore.Delete(c, key)
+	return err
 }
 
 func calcAbilityMod(ability int, level int) int {
@@ -232,7 +241,7 @@ func (m *Monster) Save(c chan<- datastore.Property) error {
 	c <- makeProp("Intelligence", int64(m.Intelligence), true, false)
 	c <- makeProp("Wisdom", int64(m.Wisdom), true, false)
 	c <- makeProp("Charisma", int64(m.Charisma), true, false)
-	c <- makeProp("Alignmment", m.Alignment, true, false)
+	c <- makeProp("Alignment", m.Alignment, true, false)
 	for _, language := range m.Languages {
 		c <- makeProp("Languages", language, true, true)
 	}

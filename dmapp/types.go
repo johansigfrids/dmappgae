@@ -1,7 +1,7 @@
 package dmapp
 
 type Monster struct {
-	encodedKey string `datastore:",noindex"`
+	EncodedKey string `datastore:",noindex"`
 	Name       string
 	Level      int
 	Role       string

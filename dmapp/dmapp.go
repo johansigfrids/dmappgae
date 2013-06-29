@@ -11,6 +11,7 @@ func init() {
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/viewMonster/", viewMonsterHandler)
 	http.HandleFunc("/newMonster/", newMonsterHandler)
+	http.HandleFunc("/deleteMonster/", deleteMonsterHandler)
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
@@ -154,6 +155,37 @@ func newMonsterHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		http.Redirect(w, r, "/viewMonster/"+encodedKey, http.StatusFound)
+		http.Redirect(w, r, "/viewMonster/"+encodedKey, http.StatusSeeOther)
+	}
+}
+
+func deleteMonsterHandler(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	if r.Method == "GET" {
+		path := r.URL.Path
+		encodedKey := path[len("/deleteMonster/"):]
+		monster, err := getMonster(c, encodedKey)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		t, err := template.ParseFiles("templates/base.gohtml", "templates/deleteMonster.gohtml")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = t.Execute(w, monster)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else if r.Method == "POST" {
+		encodedKey := r.FormValue("Key")
+		err := deleteMonster(c, encodedKey)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
